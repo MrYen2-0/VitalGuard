@@ -5,6 +5,7 @@ import Register from './views/Registro';
 import Restaurar from './views/Restaurar';
 import Inicio from './views/Inicio';
 import Estadisticas from './views/Estadisticas';
+import Historial from './views/Historial';
 
 import './assets/styles/App.css';
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/restaurar" element={<Restaurar />} />
           <Route path="/inicio" element={<Inicio />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
+          <Route path="/historial" element={<Historial />} />
 
         </Routes>
       </div>

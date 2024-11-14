@@ -6,8 +6,9 @@ export const Inicio = () => {
   return (
     <div className="Menu w-96 h-96 bg-white flex-col justify-start items-start gap-2.5 inline-flex">
       <div className="Inicio w-96 h-96 relative bg-[#0d0d0d]">
-        <div className="Si w-28 h-36 left-[185px] top-[658px] absolute text-black text-8xl font-['Inter'] z-50">
+        <div className="Si w-28 h-36 left-[180px] top-[640px] absolute text-black text-7xl font-['Inter'] z-50">
           SI
+          /NO
         </div>
 
         <div className="Rectangle3 w-96 h-14 left-0 top-0 absolute bg-[#0d0d0d] shadow" />
@@ -22,9 +23,14 @@ export const Inicio = () => {
           src="https://via.placeholder.com/660x438"
           alt="Placeholder"
         />
-        <Link to="/estadisticas" className="VerTodasLasEstadisticas w-72 h-7 left-[66px] top-[129px] absolute text-[#ff5b00] text-2xl font-medium font-['Inter']">
-          Ver todas las estadísticas
-        </Link>
+        <div className="absolute left-[66px] top-[129px] flex gap-4">
+          <Link to="/estadisticas" className="VerTodasLasEstadisticas w-72 h-7 text-[#ff5b00] text-2xl font-medium font-['Inter']">
+            Ver todas las estadísticas
+          </Link>
+          <Link to="/historial" className="Historial w-48 h-7 text-[#ff5b00] text-2xl font-medium font-['Inter']">
+            Historial
+          </Link>
+        </div>
         <div className="Datos w-96 h-96 left-[43px] top-[231px] absolute">
           <div className="Frame6 w-80 h-64 left-[47px] top-[66px] absolute justify-start items-start gap-2.5 inline-flex">
             <div className="Frame4 w-80 h-63 p-3 bg-gradient-to-b from-[#36373e] to-[#36373e] rounded-lg flex-col justify-start items-start gap-2.5 inline-flex">
@@ -50,7 +56,7 @@ export const Inicio = () => {
           </div>
           <div className="Chaleco w-64 h-72 pl-7 pr-4 py-4 left-[80px] top-[330px] absolute bg-gradient-to-b from-[#36373e] to-[#36373e] rounded-lg flex-col justify-start items-start gap-9 inline-flex">
             <div className="LlevaPuestoElChaleco text-[#dc4d00] text-xl font-light font-['Inter']">
-              Lleva puesto el chaleco
+              Necesita Ayuda la persona
             </div>
           </div>
         </div>

@@ -6,14 +6,14 @@ import "../assets/styles/Estadisticas.css";
 export const Estadisticas = () => {
   return (
     <div className="Estadisticas w-full h-screen bg-[#0d0d0d] flex flex-col justify-center items-center p-60 gap-8">
-      <Link to="/inicio" className="absolute top-4 left-4 text-orange-500 text-3xl">
+      <Link to="/inicio" className="absolute top-6 left-6 text-orange-500 text-5xl">
         <FaArrowLeft />
       </Link>
       <h1 className="text-4xl font-bold text-white">Estadísticas de Salud</h1>
 
       <div className="w-full max-w-5xl flex flex-row justify-between gap-8">
         <div className="w-1/2 bg-gray-900 p-6 rounded-lg shadow-md text-white relative">
-          <h2 className="text-2xl font-semibold mb-4">Ritmo Cardíaco</h2>
+          <h2 className="text-2xl font-semibold mb-4">Ritmo Cardíaco (Promedio)</h2>
 
           <div className="overflow-x-auto">
             <h3 className="text-xl font-medium mt-4">Por Día</h3>
@@ -79,7 +79,7 @@ export const Estadisticas = () => {
         </div>
 
         <div className="w-1/2 bg-gray-900 p-6 rounded-lg shadow-md text-white relative">
-          <h2 className="text-2xl font-semibold mb-4">Temperatura Corporal</h2>
+          <h2 className="text-2xl font-semibold mb-4">Temperatura Corporal (Promedio)</h2>
 
           <div className="overflow-x-auto">
             <h3 className="text-xl font-medium mt-4">Por Día</h3>
@@ -145,7 +145,6 @@ export const Estadisticas = () => {
         </div>
         <div className="absolute top-48 right-60 flex flex-col gap-8">
             <button className="bg-orange-500 text-white p-8 rounded-lg shadow-md">Descargar Estadísticas</button>
-            <button className="bg-orange-500 text-white p-8 rounded-lg shadow-md">Compartir Estadísticas</button>
           </div>
       </div>
     </div>
