@@ -25,7 +25,7 @@ export const Inicio = () => {
         />
         <div className="absolute left-[66px] top-[129px] flex gap-4">
           <Link to="/estadisticas" className="VerTodasLasEstadisticas w-72 h-7 text-[#ff5b00] text-2xl font-medium font-['Inter']">
-            Ver todas las estadísticas
+            Estadísticas de Salud
           </Link>
           <Link to="/historial" className="Historial w-48 h-7 text-[#ff5b00] text-2xl font-medium font-['Inter']">
             Historial
