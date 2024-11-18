@@ -5,19 +5,19 @@ import "../assets/styles/Estadisticas.css";
 
 export const Estadisticas = () => {
   return (
-    <div className="Estadisticas w-full h-screen bg-[#0d0d0d] flex flex-col justify-center items-center p-60 gap-8">
-      <Link to="/inicio" className="absolute top-6 left-6 text-orange-500 text-5xl">
+    <div className="Estadisticas w-full min-h-screen bg-[#0d0d0d] flex flex-col justify-center items-center px-4 py-8 gap-8">
+      <Link to="/inicio" className="absolute top-4 left-4 text-orange-500 text-3xl md:text-5xl">
         <FaArrowLeft />
       </Link>
-      <h1 className="text-4xl font-bold text-white">HIstorial de signos Vitales</h1>
-
-      <div className="w-full max-w-5xl flex flex-row justify-between gap-8">
-        <div className="w-1/2 bg-gray-900 p-6 rounded-lg shadow-md text-white relative">
-          <h2 className="text-2xl font-semibold mb-4">Ritmo Cardíaco (Promedio)</h2>
-
+      <h1 className="text-2xl md:text-4xl font-bold text-white text-center">Historial de Signos Vitales</h1>
+  
+      <div className="w-full max-w-5xl flex flex-col md:flex-row justify-between gap-8">
+        {/* Ritmo Cardíaco */}
+        <div className="w-full md:w-1/2 bg-gray-900 p-4 md:p-6 rounded-lg shadow-md text-white">
+          <h2 className="text-xl md:text-2xl font-semibold mb-4">Ritmo Cardíaco (Promedio)</h2>
           <div className="overflow-x-auto">
-            <h3 className="text-xl font-medium mt-4">Por Día</h3>
-            <table className="w-full text-left border-collapse mt-2">
+            <h3 className="text-lg md:text-xl font-medium mt-4">Por Día</h3>
+            <table className="w-full text-left border-collapse mt-2 text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="p-2 border-b-2 border-gray-300">Fecha</th>
@@ -35,9 +35,9 @@ export const Estadisticas = () => {
                 </tr>
               </tbody>
             </table>
-
-            <h3 className="text-xl font-medium mt-4">Por Semana</h3>
-            <table className="w-full text-left border-collapse mt-2">
+  
+            <h3 className="text-lg md:text-xl font-medium mt-4">Por Semana</h3>
+            <table className="w-full text-left border-collapse mt-2 text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="p-2 border-b-2 border-gray-300">Semana</th>
@@ -55,9 +55,9 @@ export const Estadisticas = () => {
                 </tr>
               </tbody>
             </table>
-
-            <h3 className="text-xl font-medium mt-4">Por Mes</h3>
-            <table className="w-full text-left border-collapse mt-2">
+  
+            <h3 className="text-lg md:text-xl font-medium mt-4">Por Mes</h3>
+            <table className="w-full text-left border-collapse mt-2 text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="p-2 border-b-2 border-gray-300">Mes</th>
@@ -77,13 +77,13 @@ export const Estadisticas = () => {
             </table>
           </div>
         </div>
-
-        <div className="w-1/2 bg-gray-900 p-6 rounded-lg shadow-md text-white relative">
-          <h2 className="text-2xl font-semibold mb-4">Temperatura Corporal (Promedio)</h2>
-
+  
+        {/* Temperatura Corporal */}
+        <div className="w-full md:w-1/2 bg-gray-900 p-4 md:p-6 rounded-lg shadow-md text-white">
+          <h2 className="text-xl md:text-2xl font-semibold mb-4">Temperatura Corporal (Promedio)</h2>
           <div className="overflow-x-auto">
-            <h3 className="text-xl font-medium mt-4">Por Día</h3>
-            <table className="w-full text-left border-collapse mt-2">
+            <h3 className="text-lg md:text-xl font-medium mt-4">Por Día</h3>
+            <table className="w-full text-left border-collapse mt-2 text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="p-2 border-b-2 border-gray-300">Fecha</th>
@@ -101,9 +101,9 @@ export const Estadisticas = () => {
                 </tr>
               </tbody>
             </table>
-
-            <h3 className="text-xl font-medium mt-4">Por Semana</h3>
-            <table className="w-full text-left border-collapse mt-2">
+  
+            <h3 className="text-lg md:text-xl font-medium mt-4">Por Semana</h3>
+            <table className="w-full text-left border-collapse mt-2 text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="p-2 border-b-2 border-gray-300">Semana</th>
@@ -121,9 +121,9 @@ export const Estadisticas = () => {
                 </tr>
               </tbody>
             </table>
-
-            <h3 className="text-xl font-medium mt-4">Por Mes</h3>
-            <table className="w-full text-left border-collapse mt-2">
+  
+            <h3 className="text-lg md:text-xl font-medium mt-4">Por Mes</h3>
+            <table className="w-full text-left border-collapse mt-2 text-sm md:text-base">
               <thead>
                 <tr>
                   <th className="p-2 border-b-2 border-gray-300">Mes</th>
@@ -143,12 +143,15 @@ export const Estadisticas = () => {
             </table>
           </div>
         </div>
-        <div className="absolute top-48 right-60 flex flex-col gap-8">
-            <button className="bg-orange-500 text-white p-8 rounded-lg shadow-md">Descargar Estadísticas</button>
-          </div>
+      </div>
+  
+      {/* Botón de descarga */}
+      <div className="mt-4">
+        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-orange-600">
+          Descargar Estadísticas
+        </button>
       </div>
     </div>
   );
-};
-
+}; 
 export default Estadisticas;

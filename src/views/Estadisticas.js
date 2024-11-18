@@ -69,20 +69,26 @@ export const Historial = () => {
   };
 
   return (
-    <div className="Historial w-full h-screen bg-[#0d0d0d] flex flex-col justify-center items-center p-72 gap-4">
-      <Link to="/inicio" className="absolute top-6 left-6 text-orange-500 text-5xl">
+    <div className="Historial w-full min-h-screen bg-[#0d0d0d] flex flex-col items-center p-6 sm:p-10 lg:p-16 gap-4">
+      <Link to="/inicio" className="absolute top-4 left-4 text-orange-500 text-3xl sm:text-4xl lg:text-5xl">
         <FaArrowLeft />
       </Link>
-      <h1 className="text-4xl font-bold text-white mb-8">Estadísticas de Salud</h1>
-
-      <div className="flex flex-row w-full max-w-5xl gap-6 mb-8">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-6 sm:mb-8">
+        Estadísticas de Salud
+      </h1>
+  
+      <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-6">
         {/* Gráfico de Ritmo Cardíaco */}
-        <div className="w-1/2 bg-gray-900 p-6 rounded-lg shadow-md text-white">
-          <h2 className="text-2xl font-semibold mb-4">Curva de Tendencia del Ritmo Cardíaco</h2>
-          <div className="chart-container mb-8">
+        <div className="w-full lg:w-1/2 bg-gray-900 p-4 sm:p-6 rounded-lg shadow-md text-white">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+            Curva de Tendencia del Ritmo Cardíaco
+          </h2>
+          <div className="chart-container mb-6 sm:mb-8">
             <Line data={dataCardiaco} options={options} />
           </div>
-          <h2 className="text-2xl font-semibold mb-4">Medidas u Observaciones Filtradas de Ritmo Cardíaco</h2>
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+            Medidas u Observaciones Filtradas de Ritmo Cardíaco
+          </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse mt-2">
               <thead>
@@ -98,38 +104,23 @@ export const Historial = () => {
                   <td className="p-2 border-b">70</td>
                   <td className="p-2 border-b">Normal</td>
                 </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:03</td>
-                  <td className="p-2 border-b">72</td>
-                  <td className="p-2 border-b">Normal</td>
-                </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:06</td>
-                  <td className="p-2 border-b">74</td>
-                  <td className="p-2 border-b">Elevado</td>
-                </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:09</td>
-                  <td className="p-2 border-b">75</td>
-                  <td className="p-2 border-b">Normal</td>
-                </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:12</td>
-                  <td className="p-2 border-b">73</td>
-                  <td className="p-2 border-b">Normal</td>
-                </tr>
+                {/* Más filas aquí */}
               </tbody>
             </table>
           </div>
         </div>
-
+  
         {/* Gráfico de Temperatura Corporal */}
-        <div className="w-1/2 bg-gray-900 p-6 rounded-lg shadow-md text-white">
-          <h2 className="text-2xl font-semibold mb-4">Curva de Tendencia de Temperatura Corporal</h2>
-          <div className="chart-container mb-8">
+        <div className="w-full lg:w-1/2 bg-gray-900 p-4 sm:p-6 rounded-lg shadow-md text-white">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+            Curva de Tendencia de Temperatura Corporal
+          </h2>
+          <div className="chart-container mb-6 sm:mb-8">
             <Line data={dataTemperatura} options={options} />
           </div>
-          <h2 className="text-2xl font-semibold mb-4">Medidas u Observaciones Filtradas de Temperatura Corporal</h2>
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
+            Medidas u Observaciones Filtradas de Temperatura Corporal
+          </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse mt-2">
               <thead>
@@ -145,26 +136,7 @@ export const Historial = () => {
                   <td className="p-2 border-b">36.6</td>
                   <td className="p-2 border-b">Normal</td>
                 </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:03</td>
-                  <td className="p-2 border-b">36.7</td>
-                  <td className="p-2 border-b">Normal</td>
-                </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:06</td>
-                  <td className="p-2 border-b">36.8</td>
-                  <td className="p-2 border-b">Elevado</td>
-                </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:09</td>
-                  <td className="p-2 border-b">36.7</td>
-                  <td className="p-2 border-b">Normal</td>
-                </tr>
-                <tr>
-                  <td className="p-2 border-b">2024-11-01 12:12</td>
-                  <td className="p-2 border-b">36.6</td>
-                  <td className="p-2 border-b">Normal</td>
-                </tr>
+                {/* Más filas aquí */}
               </tbody>
             </table>
           </div>
@@ -172,6 +144,6 @@ export const Historial = () => {
       </div>
     </div>
   );
-};
+};  
 
 export default Historial;
