@@ -22,7 +22,7 @@ const Home = () => {
       const parsedResponse = await response.json();
       if (parsedResponse.success) {
         console.info(parsedResponse.message);
-        navigate("/Home");
+        navigate("/inicio");
       }
     } catch (error) {
       console.error(error);

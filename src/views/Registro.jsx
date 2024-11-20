@@ -11,6 +11,7 @@ const Register = () => {
   const [confirmPsw, setConfirmPsw] = useState(null);
 
   async function handleRegister() {
+
     try {
       if (password !== confirmPsw) {
         await Swal.fire({
@@ -28,7 +29,8 @@ const Register = () => {
         body: JSON.stringify({ gmail, password })
       })
       if (!response.ok) {
-        console.error("bad request");
+        const errorData = await response.json();
+        console.error("Error: ", errorData);
         return;
       }
       const parsedResponse = await response.json();

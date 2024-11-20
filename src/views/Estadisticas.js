@@ -2,6 +2,7 @@ import React from "react";
 import { Line } from "react-chartjs-2";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { useState, useEffect } from "react";
 
 import {
   Chart as ChartJS,
@@ -25,6 +26,9 @@ ChartJS.register(
 );
 
 export const Historial = () => {
+
+  const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
+
   const dataCardiaco = {
     labels: ["12:00", "12:03", "12:06", "12:09", "12:12", "12:15", "12:18", "12:21", "12:24", "12:27"],
     datasets: [
@@ -50,6 +54,32 @@ export const Historial = () => {
       },
     ],
   };
+
+  ws.onopen = function (event) {
+    console.log(event);
+  }
+
+  ws.onmessage = function (event) {
+    const parsedData = JSON.parse(event.data)
+    switch (parsedData.topic) {
+      case "sensor/bpm":
+        dataCardiaco.labels.push(new Date().getHours());
+        dataCardiaco.labels.pop();
+        dataCardiaco.datasets.push(parsedData.parsedData.valor);
+        dataCardiaco.datasets.pop();
+        break;
+      
+      case "sensor/temperatura":
+        dataTemperatura.labels.push(new Date().getHours());
+        dataTemperatura.labels.pop();
+        dataTemperatura.datasets.push(parsedData.parsedData.valor);
+        dataTemperatura.datasets.pop();
+        break;
+        
+      default:
+        console.log("...");
+    }
+  }
 
   const options = {
     scales: {
