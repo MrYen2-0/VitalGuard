@@ -1,8 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import "../assets/styles/Restaurar.css";
 
 const Restaurar = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkToken() {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+        if (!response.ok) return;
+        const parsedResponse = await response.json();
+        if (!parsedResponse.success) {
+          console.log("not authorized");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error(error);
+        navigate("/");
+      }
+    }
+
+    checkToken();
+  }, []);
   return (
     <div className="lights-screen">
     <div className="text-wrapper">Restaurar Contraseñá</div>

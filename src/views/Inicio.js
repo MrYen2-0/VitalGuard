@@ -1,8 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../assets/styles/Inicio.css";
 
 export const Inicio = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkToken() {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+        if (!response.ok) return;
+        const parsedResponse = await response.json();
+        if (!parsedResponse.success) {
+          console.log("not authorized");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error(error);
+        navigate("/");
+      }
+    }
+
+    checkToken();
+  }, []);
   const [necesitaAyuda, setNecesitaAyuda] = useState("No");
   const [bpm, setBpm] = useState(109);
   const [temperatura, setTemperatura] = useState(36.9);

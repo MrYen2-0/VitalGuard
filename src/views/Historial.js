@@ -2,8 +2,38 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import "../assets/styles/Estadisticas.css";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Estadisticas = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkToken() {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+        if (!response.ok) return;
+        const parsedResponse = await response.json();
+        if (!parsedResponse.success) {
+          console.log("not authorized");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error(error);
+        navigate("/");
+      }
+    }
+
+    checkToken();
+  }, []);
+
   return (
     <div className="Estadisticas w-full min-h-screen bg-[#0d0d0d] flex flex-col justify-center items-center px-4 py-8 gap-8">
       <Link to="/inicio" className="absolute top-4 left-4 text-orange-500 text-3xl md:text-5xl">
