@@ -18,7 +18,10 @@ const Home = () => {
         credentials: 'include',
         body: JSON.stringify({ gmail, password: psw })
       });
-      if (!response.ok) return;
+      if (!response.ok) {
+        console.info(await response.json());
+        return;
+      };
       const parsedResponse = await response.json();
       if (parsedResponse.success) {
         console.info(parsedResponse.message);

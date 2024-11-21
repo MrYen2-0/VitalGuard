@@ -32,6 +32,42 @@ export const Inicio = () => {
     }
 
     checkToken();
+
+    async function setWS() {
+      const ws = new WebSocket(process.env.REACT_APP_WS_URL);
+      ws.onopen = function (event) {
+        console.log(event);
+      }
+
+      ws.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+
+        switch (data.topic) {
+          case "sensor/bpm":
+            setBpm(data.parsedData.valor)
+            break;
+          
+          case "sensor/temperatura":
+            setTemperatura(data.parsedData.valor);
+            break;
+          
+          default:
+            console.info("no implementado");
+        }
+      }
+
+      ws.onclose = function (event) {
+        console.info("websockets conn was closed, trying to re-connect...");
+        setTimeout(() => setWS(), 8000)
+      }
+
+      ws.onerror = function (event) {
+        console.error(event);
+      }
+    }
+
+    setWS();
+
   }, []);
   const [necesitaAyuda, setNecesitaAyuda] = useState("No");
   const [bpm, setBpm] = useState(109);

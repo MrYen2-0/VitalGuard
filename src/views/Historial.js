@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import "../assets/styles/Estadisticas.css";
@@ -8,6 +8,30 @@ import { useNavigate } from "react-router-dom";
 export const Estadisticas = () => {
 
   const navigate = useNavigate();
+
+  const [actualPromBpm, setActualPromBpm] = useState({
+    dia: { valor: 0, fecha: "" },
+    semana: { valor: 0, fecha: "" },
+    mes: { valor: 0, fecha: "" },
+  });
+
+  const [anteriorPromBpm, setAnteriorPromBpm] = useState({
+    dia: { valor: 0, fecha: "" },
+    semana: { valor: 0, fecha: "" },
+    mes: { valor: 0, fecha: "" },
+  });
+
+  const [anteriorPromTemperatura, setAnteriorPromTemperatura] = useState({
+    dia: { valor: 0, fecha: "" },
+    semana: { valor: 0, fecha: "" },
+    mes: { valor: 0, fecha: "" },
+  });
+
+  const [actualPromTemperatura, setActualPromTemperatura] = useState({
+    dia: { valor: 0, fecha: "" },
+    semana: { valor: 0, fecha: "" },
+    mes: { valor: 0, fecha: "" },
+  });
 
   useEffect(() => {
     async function checkToken() {
@@ -34,7 +58,118 @@ export const Estadisticas = () => {
       }
     }
 
+    async function getProms() {
+      try {
+        // Obtener promedios de BPM
+        const bpmResponseDia = await fetch(`${process.env.REACT_APP_API_URL}/records/prom/dia/bpm`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+        const bpmDataDia = await bpmResponseDia.json();
+        setActualPromBpm((prevState) => ({
+          ...prevState,
+          dia: { valor: bpmDataDia.promActual, fecha: bpmDataDia.fechaActual },
+        }));
+        setAnteriorPromBpm((prevState) => ({
+          ...prevState,
+          dia: { valor: bpmDataDia.promAnterior, fecha: bpmDataDia.fechaAnterior },
+        }));
+
+        const bpmResponseSemana = await fetch(`${process.env.REACT_APP_API_URL}/records/prom/semana/bpm`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+        const bpmDataSemana = await bpmResponseSemana.json();
+        setActualPromBpm((prevState) => ({
+          ...prevState,
+          semana: { valor: bpmDataSemana.promActual, fecha: bpmDataSemana.fechaActual },
+        }));
+        setAnteriorPromBpm((prevState) => ({
+          ...prevState,
+          semana: { valor: bpmDataSemana.promAnterior, fecha: bpmDataSemana.fechaAnterior },
+        }));
+
+        const bpmResponseMes = await fetch(`${process.env.REACT_APP_API_URL}/records/prom/mes/bpm`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+        const bpmDataMes = await bpmResponseMes.json();
+        setActualPromBpm((prevState) => ({
+          ...prevState,
+          mes: { valor: bpmDataMes.promActual, fecha: bpmDataMes.fechaActual },
+        }));
+        setAnteriorPromBpm((prevState) => ({
+          ...prevState,
+          mes: { valor: bpmDataMes.promAnterior, fecha: bpmDataMes.fechaAnterior },
+        }));
+
+        // Obtener promedios de Temperatura
+        const tempResponseDia = await fetch(`${process.env.REACT_APP_API_URL}/records/prom/dia/temperatura`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+        const tempDataDia = await tempResponseDia.json();
+        setActualPromTemperatura((prevState) => ({
+          ...prevState,
+          dia: { valor: tempDataDia.promActual, fecha: tempDataDia.fechaActual },
+        }));
+        setAnteriorPromTemperatura((prevState) => ({
+          ...prevState,
+          dia: { valor: tempDataDia.promAnterior, fecha: tempDataDia.fechaAnterior },
+        }));
+
+        const tempResponseSemana = await fetch(`${process.env.REACT_APP_API_URL}/records/prom/semana/temperatura`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+        const tempDataSemana = await tempResponseSemana.json();
+        setActualPromTemperatura((prevState) => ({
+          ...prevState,
+          semana: { valor: tempDataSemana.promActual, fecha: tempDataSemana.fechaActual },
+        }));
+        setAnteriorPromTemperatura((prevState) => ({
+          ...prevState,
+          semana: { valor: tempDataSemana.promAnterior, fecha: tempDataSemana.fechaAnterior },
+        }));
+
+        const tempResponseMes = await fetch(`${process.env.REACT_APP_API_URL}/records/prom/mes/temperatura`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+        const tempDataMes = await tempResponseMes.json();
+        setActualPromTemperatura((prevState) => ({
+          ...prevState,
+          mes: { valor: tempDataMes.promActual, fecha: tempDataMes.fechaActual },
+        }));
+        setAnteriorPromTemperatura((prevState) => ({
+          ...prevState,
+          mes: { valor: tempDataMes.promAnterior, fecha: tempDataMes.fechaAnterior },
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     checkToken();
+    getProms();
   }, []);
 
   return (
@@ -59,12 +194,12 @@ export const Estadisticas = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">2024-11-01</td>
-                  <td className="p-2 border-b">70</td>
+                  <td className="p-2 border-b">{ anteriorPromBpm.dia.fecha }</td>
+                  <td className="p-2 border-b">{ anteriorPromBpm.dia.valor }</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">2024-11-02</td>
-                  <td className="p-2 border-b">75</td>
+                  <td className="p-2 border-b">{ actualPromBpm.dia.fecha }</td>
+                  <td className="p-2 border-b">{ actualPromBpm.dia.valor }</td>
                 </tr>
               </tbody>
             </table>
@@ -79,12 +214,12 @@ export const Estadisticas = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">Semana 1</td>
-                  <td className="p-2 border-b">72</td>
+                  <td className="p-2 border-b">{ anteriorPromBpm.semana.fecha }</td>
+                  <td className="p-2 border-b">{ anteriorPromBpm.semana.valor }</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">Semana 2</td>
-                  <td className="p-2 border-b">74</td>
+                  <td className="p-2 border-b">{ actualPromBpm.semana.fecha }</td>
+                  <td className="p-2 border-b">{ actualPromBpm.semana.valor }</td>
                 </tr>
               </tbody>
             </table>
@@ -99,12 +234,12 @@ export const Estadisticas = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">Noviembre 2024</td>
-                  <td className="p-2 border-b">73</td>
+                  <td className="p-2 border-b">{ anteriorPromBpm.mes.fecha }</td>
+                  <td className="p-2 border-b">{ anteriorPromBpm.mes.valor }</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">Diciembre 2024</td>
-                  <td className="p-2 border-b">71</td>
+                  <td className="p-2 border-b">{ actualPromBpm.mes.fecha }</td>
+                  <td className="p-2 border-b">{ actualPromBpm.mes.valor }</td>
                 </tr>
               </tbody>
             </table>
@@ -125,12 +260,12 @@ export const Estadisticas = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">2024-11-01</td>
-                  <td className="p-2 border-b">36.6</td>
+                  <td className="p-2 border-b">{ anteriorPromTemperatura.dia.fecha }</td>
+                  <td className="p-2 border-b">{ anteriorPromTemperatura.dia.valor }</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">2024-11-02</td>
-                  <td className="p-2 border-b">36.7</td>
+                  <td className="p-2 border-b">{ actualPromTemperatura.dia.fecha }</td>
+                  <td className="p-2 border-b">{ actualPromTemperatura.dia.valor }</td>
                 </tr>
               </tbody>
             </table>
@@ -145,12 +280,12 @@ export const Estadisticas = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">Semana 1</td>
-                  <td className="p-2 border-b">36.5</td>
+                  <td className="p-2 border-b">{ anteriorPromTemperatura.semana.fecha }</td>
+                  <td className="p-2 border-b">{ anteriorPromTemperatura.semana.valor }</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">Semana 2</td>
-                  <td className="p-2 border-b">36.6</td>
+                  <td className="p-2 border-b">{ actualPromTemperatura.semana.fecha }</td>
+                  <td className="p-2 border-b">{ actualPromTemperatura.semana.valor }</td>
                 </tr>
               </tbody>
             </table>
@@ -165,12 +300,12 @@ export const Estadisticas = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">Noviembre 2024</td>
-                  <td className="p-2 border-b">36.5</td>
+                  <td className="p-2 border-b">{ anteriorPromTemperatura.mes.fecha }</td>
+                  <td className="p-2 border-b">{ anteriorPromTemperatura.mes.valor }</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">Diciembre 2024</td>
-                  <td className="p-2 border-b">36.6</td>
+                  <td className="p-2 border-b">{ actualPromTemperatura.mes.fecha }</td>
+                  <td className="p-2 border-b">{ actualPromTemperatura.mes.valor }</td>
                 </tr>
               </tbody>
             </table>

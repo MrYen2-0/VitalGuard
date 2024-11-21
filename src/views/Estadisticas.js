@@ -128,6 +128,27 @@ export const Historial = () => {
       }
     };
 
+    async function saveRecord(route, data) {
+      await fetch(`${process.env.REACT_APP_API_URL}/records/${route}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: data
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+
+    setTimeout(async() => {
+      await saveRecord("bpm", JSON.stringify({ valor: actualBpm }));
+    }, 300000);
+
+    setTimeout(async () => {
+      await saveRecord("temperatura", JSON.stringify({ valor: actualTemperatura }))
+    }, 300000);
+
     return () => {
       ws.close();
     };
