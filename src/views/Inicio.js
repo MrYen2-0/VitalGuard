@@ -16,7 +16,10 @@ export const Inicio = () => {
           'Content-Type': 'application/json'
         }
       });
-        if (!response.ok) return;
+        if (!response.ok) {
+          navigate("/");
+          return;
+        }
         const parsedResponse = await response.json();
         if (!parsedResponse.success) {
           console.log("not authorized");

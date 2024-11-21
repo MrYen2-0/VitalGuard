@@ -31,6 +31,7 @@ const Register = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error: ", errorData);
+        navigate("/");
         return;
       }
       const parsedResponse = await response.json();

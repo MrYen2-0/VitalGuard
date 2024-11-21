@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { useState, useEffect } from "react";
 
 import {
   Chart as ChartJS,
@@ -26,60 +25,113 @@ ChartJS.register(
 );
 
 export const Historial = () => {
-
-  const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
-
-  const dataCardiaco = {
+  const navigate = useNavigate();
+  
+  const [dataCardiaco, setDataCardiaco] = useState({
     labels: ["12:00", "12:03", "12:06", "12:09", "12:12", "12:15", "12:18", "12:21", "12:24", "12:27"],
     datasets: [
       {
         label: "Ritmo Cardíaco (BPM)",
-        data: [70, 72, 74, 75, 73, 72, 71, 72, 73, 80],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         fill: true,
       },
     ],
-  };
+  });
 
-  const dataTemperatura = {
+  const [dataTemperatura, setDataTemperatura] = useState({
     labels: ["12:00", "12:03", "12:06", "12:09", "12:12", "12:15", "12:18", "12:21", "12:24", "12:27"],
     datasets: [
       {
         label: "Temperatura Corporal (°C)",
-        data: [35, 37.9, 36.8, 36.7, 36, 37.7, 36.6, 36.5, 36.6, 34.6],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         borderColor: "rgba(54, 162, 235, 1)",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         fill: true,
       },
     ],
-  };
+  });
 
-  ws.onopen = function (event) {
-    console.log(event);
-  }
+  const [actualBpm, setActualBpm] = useState(0);
+  const [actualTemperatura, setActualTemperatura] = useState(0);
 
-  ws.onmessage = function (event) {
-    const parsedData = JSON.parse(event.data)
-    switch (parsedData.topic) {
-      case "sensor/bpm":
-        dataCardiaco.labels.push(new Date().getHours());
-        dataCardiaco.labels.pop();
-        dataCardiaco.datasets.push(parsedData.parsedData.valor);
-        dataCardiaco.datasets.pop();
-        break;
-      
-      case "sensor/temperatura":
-        dataTemperatura.labels.push(new Date().getHours());
-        dataTemperatura.labels.pop();
-        dataTemperatura.datasets.push(parsedData.parsedData.valor);
-        dataTemperatura.datasets.pop();
-        break;
-        
-      default:
-        console.log("...");
+  useEffect(() => {
+    async function checkToken() {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          navigate("/");
+          return;
+        }
+        const parsedResponse = await response.json();
+        if (!parsedResponse.success) {
+          console.log("not authorized");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error(error);
+        navigate("/");
+      }
     }
-  }
+
+    checkToken();
+
+    const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
+
+    ws.onopen = function (event) {
+      console.log("WebSocket opened:", event);
+    };
+
+    ws.onmessage = function (event) {
+      const parsedData = JSON.parse(event.data);
+      console.log("Received data:", parsedData); // Añadir logs para ver los datos recibidos
+      switch (parsedData.topic) {
+        case "sensor/bpm":
+          setDataCardiaco((prevData) => {
+            const newLabels = [...prevData.labels, new Date().toLocaleTimeString()];
+            newLabels.shift();
+            const newData = [...prevData.datasets[0].data, parsedData.valor];
+            newData.shift();
+            return {
+              ...prevData,
+              labels: newLabels,
+              datasets: [{ ...prevData.datasets[0], data: newData }]
+            };
+          });
+          setActualBpm(parsedData.valor);
+          break;
+
+        case "sensor/temperatura":
+          setDataTemperatura((prevData) => {
+            const newLabels = [...prevData.labels, new Date().toLocaleTimeString()];
+            newLabels.shift();
+            const newData = [...prevData.datasets[0].data, parsedData.valor];
+            newData.shift();
+            return {
+              ...prevData,
+              labels: newLabels,
+              datasets: [{ ...prevData.datasets[0], data: newData }]
+            };
+          });
+          setActualTemperatura(parsedData.valor);
+          break;
+
+        default:
+          console.log("Unknown topic");
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [navigate]);
 
   const options = {
     scales: {
@@ -94,6 +146,8 @@ export const Historial = () => {
           display: true,
           text: 'Valor',
         },
+        min: 0,
+        max: 200
       },
     },
   };
@@ -131,7 +185,7 @@ export const Historial = () => {
               <tbody>
                 <tr>
                   <td className="p-2 border-b">2024-11-01 12:00</td>
-                  <td className="p-2 border-b">70</td>
+                  <td className="p-2 border-b">{ actualBpm }</td>
                   <td className="p-2 border-b">Normal</td>
                 </tr>
                 {/* Más filas aquí */}
@@ -163,7 +217,7 @@ export const Historial = () => {
               <tbody>
                 <tr>
                   <td className="p-2 border-b">2024-11-01 12:00</td>
-                  <td className="p-2 border-b">36.6</td>
+                  <td className="p-2 border-b">{ actualTemperatura }</td>
                   <td className="p-2 border-b">Normal</td>
                 </tr>
                 {/* Más filas aquí */}
@@ -174,6 +228,6 @@ export const Historial = () => {
       </div>
     </div>
   );
-};  
+};
 
 export default Historial;
