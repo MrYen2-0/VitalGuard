@@ -77,6 +77,47 @@ export const Inicio = () => {
     setNecesitaAyuda(necesitaAyuda === "Sí" ? "No" : "Sí");
   };
 
+  const [timeoutActive, setTimeoutActive] = useState(false);
+
+  // Conexión WebSocket
+  useEffect(() => {
+    // Conectar al WebSocket
+    const socket = new WebSocket(process.env.REACT_APP_WS_URL);
+
+    // Función que maneja los mensajes del WebSocket
+    const handleMessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.parsedData.valor === true) {
+        // Recibimos un valor true, establecemos el estado en true
+        setNecesitaAyuda(true);
+
+        // Si hay un timeout activo, lo limpiamos
+        if (timeoutActive) {
+          clearTimeout(timeoutActive);
+        }
+
+        // Configuramos un nuevo timeout para cambiar el estado a false después de 5 segundos
+        const timeout = setTimeout(() => {
+          setNecesitaAyuda(false);
+        }, 5000); // 5 segundos
+        setTimeoutActive(timeout);
+      }
+    };
+
+    // Abrir WebSocket y agregar el event listener
+    socket.addEventListener('message', handleMessage);
+
+    // Limpieza al desmontar el componente
+    return () => {
+      socket.removeEventListener('message', handleMessage);
+      if (timeoutActive) {
+        clearTimeout(timeoutActive);
+      }
+      socket.close();
+    };
+  }, [timeoutActive]);
+
   useEffect(() => {
     if (necesitaAyuda === "Sí") {
       alert("La persona necesita ayuda");

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../assets/styles/InicioSesion.css";
+import Swal from "sweetalert2";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,6 +20,10 @@ const Home = () => {
         body: JSON.stringify({ gmail, password: psw })
       });
       if (!response.ok) {
+        await Swal.fire({
+          title: 'bad request',
+          icon: 'error'
+        });
         console.info(await response.json());
         return;
       };
@@ -26,6 +31,12 @@ const Home = () => {
       if (parsedResponse.success) {
         console.info(parsedResponse.message);
         navigate("/inicio");
+      } else {
+        await Swal.fire({
+          title: 'server error',
+          icon: 'info',
+          text: 'no se ha podido completar la peticion'
+        });
       }
     } catch (error) {
       console.error(error);

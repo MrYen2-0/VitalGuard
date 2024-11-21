@@ -4,6 +4,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import "../assets/styles/Estadisticas.css";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 
 export const Estadisticas = () => {
 
@@ -32,6 +33,32 @@ export const Estadisticas = () => {
     semana: { valor: 0, fecha: "" },
     mes: { valor: 0, fecha: "" },
   });
+
+  const downloadExcel = () => {
+    const wsData = [
+      ["Periodo", "Valor", "Fecha"], // Encabezados de columna
+      ["Día (Actual BPM)", actualPromBpm.dia.valor, actualPromBpm.dia.fecha],
+      ["Semana (Actual BPM)", actualPromBpm.semana.valor, actualPromBpm.semana.fecha],
+      ["Mes (Actual BPM)", actualPromBpm.mes.valor, actualPromBpm.mes.fecha],
+      ["Día (Anterior BPM)", anteriorPromBpm.dia.valor, anteriorPromBpm.dia.fecha],
+      ["Semana (Anterior BPM)", anteriorPromBpm.semana.valor, anteriorPromBpm.semana.fecha],
+      ["Mes (Anterior BPM)", anteriorPromBpm.mes.valor, anteriorPromBpm.mes.fecha],
+      ["Día (Anterior Temperatura)", anteriorPromTemperatura.dia.valor, anteriorPromTemperatura.dia.fecha],
+      ["Semana (Anterior Temperatura)", anteriorPromTemperatura.semana.valor, anteriorPromTemperatura.semana.fecha],
+      ["Mes (Anterior Temperatura)", anteriorPromTemperatura.mes.valor, anteriorPromTemperatura.mes.fecha],
+      ["Día (Actual Temperatura)", actualPromTemperatura.dia.valor, actualPromTemperatura.dia.fecha],
+      ["Semana (Actual Temperatura)", actualPromTemperatura.semana.valor, actualPromTemperatura.semana.fecha],
+      ["Mes (Actual Temperatura)", actualPromTemperatura.mes.valor, actualPromTemperatura.mes.fecha],
+    ];
+
+    // Crear el libro de trabajo
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Datos");
+
+    // Descargar el archivo Excel
+    XLSX.writeFile(wb, "estadisticas.xlsx");
+  };
 
   useEffect(() => {
     async function checkToken() {
@@ -315,7 +342,7 @@ export const Estadisticas = () => {
   
       {/* Botón de descarga */}
       <div className="mt-4">
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-orange-600">
+        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-orange-600" onClick={downloadExcel}>
           Descargar Estadísticas
         </button>
       </div>
