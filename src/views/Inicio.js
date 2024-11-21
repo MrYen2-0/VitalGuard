@@ -90,7 +90,7 @@ export const Inicio = () => {
 
       if (data.parsedData.valor === true) {
         // Recibimos un valor true, establecemos el estado en true
-        setNecesitaAyuda(true);
+        setNecesitaAyuda("si");
 
         // Si hay un timeout activo, lo limpiamos
         if (timeoutActive) {
@@ -99,7 +99,7 @@ export const Inicio = () => {
 
         // Configuramos un nuevo timeout para cambiar el estado a false después de 5 segundos
         const timeout = setTimeout(() => {
-          setNecesitaAyuda(false);
+          setNecesitaAyuda("no");
         }, 5000); // 5 segundos
         setTimeoutActive(timeout);
       }
@@ -124,7 +124,7 @@ export const Inicio = () => {
     }
   }, [necesitaAyuda]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (bpm > 110) {
       alert("Advertencia: El ritmo cardíaco es alto");
     } else if (bpm < 58) {
@@ -136,7 +136,7 @@ export const Inicio = () => {
     } else if (temperatura < 35.5) {
       alert("Advertencia: La temperatura corporal es baja");
     }
-  }, [bpm, temperatura]);
+  }, [bpm, temperatura]);*/
 
   const getBpmBorderColor = () => {
     if (bpm > 110) return "#ff1b00";
@@ -220,12 +220,6 @@ export const Inicio = () => {
             >
               Necesita Ayuda: {necesitaAyuda}
             </div>
-            <button
-              onClick={toggleNecesitaAyuda}
-              className="mt-2 px-4 sm:px-6 py-2 sm:py-3 rounded bg-[#ff5b00] text-white hover:bg-[#e64a00]"
-            >
-              Cambiar Estado
-            </button>
           </div>
         </div>
       </div>

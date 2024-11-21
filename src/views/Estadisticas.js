@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import annotationPlugin from "chartjs-plugin-annotation";
 
 import {
   Chart as ChartJS,
@@ -21,7 +22,8 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin
 );
 
 export const Historial = () => {
@@ -33,7 +35,7 @@ export const Historial = () => {
       {
         label: "Ritmo Cardíaco (BPM)",
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        borderColor: "rgba(255, 99, 132, 1)",
+        borderColor: "#d26117",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         fill: true,
       },
@@ -46,15 +48,18 @@ export const Historial = () => {
       {
         label: "Temperatura Corporal (°C)",
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "#ffffff",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         fill: true,
       },
     ],
   });
 
-  const [actualBpm, setActualBpm] = useState(0);
-  const [actualTemperatura, setActualTemperatura] = useState(0);
+  const [actualBpm, setActualBpm] = useState({ valor: 0, cuando: "xx-xx-xx" });
+  const [actualTemperatura, setActualTemperatura] = useState({ valor: 0, cuando: "xx-xx-xx" });
+
+  const [picoBpm, setPicoBpm] = useState({ valor: 0, cuando: "xx-xx-xx" });
+  const [picoTemp, setPicoTemp] = useState({ valor: 0, cuando: "xx-xx-xx" });
 
   useEffect(() => {
     async function checkToken() {
@@ -90,6 +95,7 @@ export const Historial = () => {
     };
 
     ws.onmessage = function (event) {
+      const now = new Date();
       const parsedData = JSON.parse(event.data);
       console.log("Received data:", parsedData); // Añadir logs para ver los datos recibidos
       switch (parsedData.topic) {
@@ -97,7 +103,7 @@ export const Historial = () => {
           setDataCardiaco((prevData) => {
             const newLabels = [...prevData.labels, new Date().toLocaleTimeString()];
             newLabels.shift();
-            const newData = [...prevData.datasets[0].data, parsedData.valor];
+            const newData = [...prevData.datasets[0].data, parsedData.parsedData.valor];
             newData.shift();
             return {
               ...prevData,
@@ -105,14 +111,21 @@ export const Historial = () => {
               datasets: [{ ...prevData.datasets[0], data: newData }]
             };
           });
-          setActualBpm(parsedData.valor);
+          setActualBpm({ valor: parsedData.parsedData.valor, cuando: `${now.toLocaleDateString()} - ${now.getHours()}:${now.getMinutes()}` });
+          setPicoBpm((prev) => {
+            if (prev.valor < parsedData.parsedData.valor) {
+              return {valor: parsedData.parsedData.valor, cuando: now.toLocaleTimeString()};
+            } else {
+              return prev;
+            }
+          });
           break;
 
         case "sensor/temperatura":
           setDataTemperatura((prevData) => {
             const newLabels = [...prevData.labels, new Date().toLocaleTimeString()];
             newLabels.shift();
-            const newData = [...prevData.datasets[0].data, parsedData.valor];
+            const newData = [...prevData.datasets[0].data, parsedData.parsedData.valor];
             newData.shift();
             return {
               ...prevData,
@@ -120,7 +133,14 @@ export const Historial = () => {
               datasets: [{ ...prevData.datasets[0], data: newData }]
             };
           });
-          setActualTemperatura(parsedData.valor);
+          setActualTemperatura({ valor: parsedData.parsedData.valor, cuando: `${now.toLocaleDateString()} - ${now.getHours()}:${now.getMinutes()}` });
+          setPicoTemp((prev) => {
+            if (prev.valor < parsedData.parsedData.valor) {
+              return {valor: parsedData.parsedData.valor, cuando: now.toLocaleTimeString()};
+            } else {
+              return prev;
+            }
+          });
           break;
 
         default:
@@ -142,11 +162,11 @@ export const Historial = () => {
     }
 
     setTimeout(async() => {
-      await saveRecord("bpm", JSON.stringify({ valor: actualBpm }));
+      await saveRecord("bpm", JSON.stringify({ valor: actualBpm.valor }));
     }, 300000);
 
     setTimeout(async () => {
-      await saveRecord("temperatura", JSON.stringify({ valor: actualTemperatura }))
+      await saveRecord("temperatura", JSON.stringify({ valor: actualTemperatura.valor }))
     }, 300000);
 
     return () => {
@@ -154,24 +174,85 @@ export const Historial = () => {
     };
   }, [navigate]);
 
-  const options = {
+
+  const optionsBpm = {
     scales: {
       x: {
         title: {
           display: true,
-          text: 'Tiempo',
+          text: "Tiempo",
         },
       },
       y: {
         title: {
           display: true,
-          text: 'Valor',
+          text: "Valor",
         },
         min: 0,
-        max: 200
+        max: 200,
+      },
+    },
+    plugins: {
+      annotation: {
+        annotations: {
+          peakLabel: {
+            type: "label",
+            xValue: dataCardiaco.labels[1],  // Cambia por el índice del eje X correspondiente
+            yValue: picoBpm.valor, // El valor máximo dinámico
+            backgroundColor: "rgba(132, 59, 11, 0.2)",
+            borderColor: "#d26117",
+            borderWidth: 1,
+            content: [picoBpm.valor + " bpm", picoBpm.cuando], // El texto a mostrar
+            color: "#bdbdbd",
+            font: {
+              size: 14,
+            },
+            enabled: true,
+          },
+        },
       },
     },
   };
+
+  const optionsTemp = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Tiempo",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Valor",
+        },
+        min: 0,
+        max:  50,
+      },
+    },
+    plugins: {
+      annotation: {
+        annotations: {
+          peakLabel: {
+            type: "label",
+            xValue: dataTemperatura.labels[1], // Cambia por el índice del eje X correspondiente
+            yValue: picoTemp.valor, // El valor máximo dinámico
+            backgroundColor: "rgba(11, 72, 109, 0.2)",
+            borderColor: "#ffffff",
+            borderWidth: 1,
+            content: [`${picoTemp.valor}°C`, picoTemp.cuando], // El texto a mostrar
+            color: "#bdbdbd",
+            font: {
+              size: 14,
+            },
+            enabled: true,
+          },
+        },
+      },
+    },
+  };
+  
 
   return (
     <div className="Historial w-full min-h-screen bg-[#0d0d0d] flex flex-col items-center p-6 sm:p-10 lg:p-16 gap-4">
@@ -189,7 +270,7 @@ export const Historial = () => {
             Curva de Tendencia del Ritmo Cardíaco
           </h2>
           <div className="chart-container mb-6 sm:mb-8">
-            <Line data={dataCardiaco} options={options} />
+            <Line data={dataCardiaco} options={optionsBpm} />
           </div>
           <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
             Medidas u Observaciones Filtradas de Ritmo Cardíaco
@@ -205,8 +286,8 @@ export const Historial = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">2024-11-01 12:00</td>
-                  <td className="p-2 border-b">{ actualBpm }</td>
+                  <td className="p-2 border-b">{ actualBpm.cuando }</td>
+                  <td className="p-2 border-b">{ actualBpm.valor }</td>
                   <td className="p-2 border-b">Normal</td>
                 </tr>
                 {/* Más filas aquí */}
@@ -221,7 +302,7 @@ export const Historial = () => {
             Curva de Tendencia de Temperatura Corporal
           </h2>
           <div className="chart-container mb-6 sm:mb-8">
-            <Line data={dataTemperatura} options={options} />
+            <Line data={dataTemperatura} options={optionsTemp} />
           </div>
           <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">
             Medidas u Observaciones Filtradas de Temperatura Corporal
@@ -237,8 +318,8 @@ export const Historial = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">2024-11-01 12:00</td>
-                  <td className="p-2 border-b">{ actualTemperatura }</td>
+                  <td className="p-2 border-b">{ actualTemperatura.cuando }</td>
+                  <td className="p-2 border-b">{ actualTemperatura.valor }</td>
                   <td className="p-2 border-b">Normal</td>
                 </tr>
                 {/* Más filas aquí */}
