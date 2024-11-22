@@ -49,6 +49,7 @@ export const Estadisticas = () => {
       ["Día (Actual Temperatura)", actualPromTemperatura.dia.valor, actualPromTemperatura.dia.fecha],
       ["Semana (Actual Temperatura)", actualPromTemperatura.semana.valor, actualPromTemperatura.semana.fecha],
       ["Mes (Actual Temperatura)", actualPromTemperatura.mes.valor, actualPromTemperatura.mes.fecha],
+      ["probabilidad de ataque cardiaco", actualPromBpm.semana.valor/150 + "%"]
     ];
 
     // Crear el libro de trabajo
