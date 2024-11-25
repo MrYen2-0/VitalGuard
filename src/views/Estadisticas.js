@@ -163,11 +163,11 @@ export const Historial = () => {
 
     setTimeout(async() => {
       await saveRecord("bpm", JSON.stringify({ valor: actualBpm.valor }));
-    }, 300000);
+    }, 120000);
 
     setTimeout(async () => {
       await saveRecord("temperatura", JSON.stringify({ valor: actualTemperatura.valor }))
-    }, 300000);
+    }, 120000);
 
     return () => {
       ws.close();

@@ -49,7 +49,9 @@ export const Estadisticas = () => {
       ["Día (Actual Temperatura)", actualPromTemperatura.dia.valor, actualPromTemperatura.dia.fecha],
       ["Semana (Actual Temperatura)", actualPromTemperatura.semana.valor, actualPromTemperatura.semana.fecha],
       ["Mes (Actual Temperatura)", actualPromTemperatura.mes.valor, actualPromTemperatura.mes.fecha],
-      ["probabilidad de ataque cardiaco", actualPromBpm.semana.valor/150 + "%"]
+      [], // Fila vacía para separación visual
+      ["Probabilidad de Ataque Cardíaco"], // Nuevo encabezado de sección
+      ["Semana", actualPromBpm.semana.valor / 150 + "%"]
     ];
 
     // Crear el libro de trabajo
@@ -59,7 +61,8 @@ export const Estadisticas = () => {
 
     // Descargar el archivo Excel
     XLSX.writeFile(wb, "estadisticas.xlsx");
-  };
+};
+
 
   useEffect(() => {
     async function checkToken() {
