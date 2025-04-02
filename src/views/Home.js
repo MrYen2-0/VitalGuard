@@ -9,7 +9,7 @@ const Home = () => {
   const [psw, setPSW] = useState(null);
   const [gmail, setGmail] = useState(null);
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/users/login`, {
         method: 'POST',
@@ -30,6 +30,7 @@ const Home = () => {
       const parsedResponse = await response.json();
       if (parsedResponse.success) {
         console.info(parsedResponse.message);
+        sessionStorage.setItem("gmail", parsedResponse.user.gmail);
         navigate("/inicio");
       } else {
         await Swal.fire({

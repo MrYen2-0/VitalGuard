@@ -10,8 +10,24 @@ const Register = () => {
   const [password, setPassword] = useState(null);
   const [confirmPsw, setConfirmPsw] = useState(null);
 
+  function validarFortalezaContrasena(contrasena) {
+    const longitudMinima = contrasena.length >= 8;
+    const tieneMayuscula = /[A-Z]/.test(contrasena);
+    const tieneCaracterEspecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(contrasena);
+    const tieneNumero = /[0-9]/.test(contrasena);
+    
+    return longitudMinima && tieneMayuscula && tieneCaracterEspecial && tieneNumero;
+  }
+  
   async function handleRegister() {
-
+    if (!validarFortalezaContrasena(password)) {
+      await Swal.fire({
+        title: "Contraseña debil",
+        icon: 'warning',
+        text: "favor de introducir una contraseña mas segura: almenos un numero, una mayuscula y un simbolo especial"
+      })
+      return;
+    }
     try {
       if (password !== confirmPsw) {
         await Swal.fire({

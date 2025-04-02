@@ -6,6 +6,19 @@ export const Inicio = () => {
 
   const navigate = useNavigate();
 
+  async function postRecord(recordName, data) {
+    await fetch(`${process.env.REACT_APP_API_URL}/records/${recordName}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: data,
+      credentials: 'include'
+    }).catch((reason) => {
+      console.log(reason);
+    });
+  }
+
   useEffect(() => {
     async function checkToken() {
       try {
@@ -39,16 +52,33 @@ export const Inicio = () => {
         console.log(event);
       }
 
-      ws.onmessage = function (event) {
+      ws.onmessage = async function (event) {
         const data = JSON.parse(event.data);
 
         switch (data.topic) {
           case "sensor/bpm":
-            setBpm(data.parsedData.valor)
+            setBpm(data.parsedData.valor);
+            await postRecord('bpm', JSON.stringify({valor: data.parsedData.valor}));
             break;
           
           case "sensor/temperatura":
             setTemperatura(data.parsedData.valor);
+            await postRecord('temperatura', JSON.stringify({ valor: data.parsedData.valor }));
+            break;
+          
+          case "email/event":
+            data.topic = null;
+            await fetch('http://localhost:8000/enviar-email', {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                to: sessionStorage.getItem("gmail"),
+                subject: "El adulto mayor ha salido de su zona.",
+                text: "Hemos detectado que la persona mayor ha salido de su zona segura, favor de revisar."
+              })
+            });
             break;
           
           default:
@@ -87,8 +117,11 @@ export const Inicio = () => {
     // Función que maneja los mensajes del WebSocket
     const handleMessage = (event) => {
       const data = JSON.parse(event.data);
+      if (data.topic === "email/event") {
+        return;
+      }
 
-      if (data.parsedData.valor === true) {
+      if (data.parsedData.Llamada) {
         // Recibimos un valor true, establecemos el estado en true
         setNecesitaAyuda("si");
 

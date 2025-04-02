@@ -88,6 +88,7 @@ export const Estadisticas = () => {
         navigate("/");
       }
     }
+    checkToken();
 
     async function getProms() {
       try {
@@ -199,7 +200,7 @@ export const Estadisticas = () => {
       }
     }
 
-    checkToken();
+    //checkToken();
     getProms();
   }, []);
 
